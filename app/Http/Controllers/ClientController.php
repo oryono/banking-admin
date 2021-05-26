@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use DB;
 use App\Models\Client;
-use Illuminate\Http\Request;
+use App\Models\Branch;
+use Illuminate\Support\Facades\Log;
+use App\Http\Requests\StoreClientRequest;
 
 class ClientController extends Controller
 {

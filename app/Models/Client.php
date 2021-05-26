@@ -10,4 +10,8 @@ class Client extends Model
     use HasFactory;
 
     protected $connection = 'banking';
+
+    protected $fillable = ['name', 'phone', 'address', 'slug'];
+
+    public $timestamps = false;
 }
