@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Client extends Model
 {
-    use HasFactory;
-
     protected $connection = 'banking';
 
     protected $fillable = ['name', 'phone', 'address', 'slug'];

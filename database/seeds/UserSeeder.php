@@ -1,7 +1,5 @@
 <?php
 
-namespace Database\Seeders;
-
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
@@ -23,6 +21,6 @@ class UserSeeder extends Seeder
             'password' => bcrypt('secret'),
             'remember_token' => Str::random(10),
         ]);
-        User::factory()->count(5)->create();
+        factory(User::class, 5)->create();
     }
 }
