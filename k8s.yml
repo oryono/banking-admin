@@ -4,13 +4,11 @@ metadata:
   name: banking-admin
 data:
   APP_NAME: "Banking Admin Api"
-  APP_ENV: production
-  APP_KEY: base64:4Mokr8FFkjaNaLSnjLTN3aGWuG1bz+LgWMJIR7snTRA=
-  APP_DEBUG: true
-  APP_URL: https://api.admin.alpinebanking.software
-  LOG_LEVEL: debug
-  DB_CONNECTION: mysql
-  JWT_SECRET: iBcAeEms4SOmUeAV2BDD1y6CFp2lYqC10KYD7MzMt3XEVeUXj9pDoYurqRGVFh95
+  APP_ENV: "production"
+  APP_DEBUG: "true"
+  APP_URL: "https://api.admin.alpinebanking.software"
+  LOG_LEVEL: "debug"
+  DB_CONNECTION: "mysql"
 
 
 ---
@@ -21,8 +19,8 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    -   port: 80
-        targetPort: 80
+    - port: 80
+      targetPort: 80
   selector:
     app: banking-admin-api
 ---
@@ -31,7 +29,7 @@ kind: Deployment
 metadata:
   name: banking-admin-api
   labels:
-    app: banking-admin-api
+    app: banking-admin-api-deployment
   annotations:
     keel.sh/pollSchedule: "@every 10s"
     keel.sh/policy: force
@@ -47,21 +45,83 @@ spec:
         app: banking-admin-api
     spec:
       imagePullSecrets:
-        -   name: ghcrregistrypullsecret
+        - name: ghcrregistrypullsecret
       containers:
-        -   name: banking-app
-            imagePullPolicy: Always
-            image: ghcr.io/oryono/banking-admin:latest
-            ports:
-              -   containerPort: 80
+        - name: banking-app
+          imagePullPolicy: Always
+          image: ghcr.io/oryono/banking-admin:latest
+          ports:
+            - containerPort: 80
+          env:
+            #                    Secrets
+            - name: BANKING_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: banking-admin
+                  key: BANKING_DATABASE_URL
+
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: banking-admin
+                  key: DATABASE_URL
+
+            - name: APP_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: banking-admin
+                  key: APP_KEY
+
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: banking-admin
+                  key: JWT_SECRET
+            # Config maps
+            - name: APP_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: banking-admin
+                  key: APP_NAME
+
+            - name: APP_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: banking-admin
+                  key: APP_ENV
+
+            - name: APP_DEBUG
+              valueFrom:
+                configMapKeyRef:
+                  name: banking-admin
+                  key: APP_DEBUG
+
+            - name: APP_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: banking-admin
+                  key: APP_URL
+
+            - name: LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: banking-admin
+                  key: LOG_LEVEL
+
+            - name: DB_CONNECTION
+              valueFrom:
+                configMapKeyRef:
+                  name: banking-admin
+                  key: DB_CONNECTION
+
 ---
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: banking-admin-api
+  name: mysql
   labels:
-    app: banking-admin-api
+    app: mysql
   annotations:
     keel.sh/pollSchedule: "@every 10s"
     keel.sh/policy: force
@@ -77,11 +137,31 @@ spec:
         app: mysql
     spec:
       containers:
-        -   name: mysql
-            imagePullPolicy: Always
-            image: mysql:8.0
-            ports:
-              -   containerPort: 3306
+        - name: mysql
+          imagePullPolicy: Always
+          image: mysql:8.0.25
+          ports:
+            - containerPort: 3306
+          env:
+                - name: MYSQL_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: mysql
+                      key: MYSQL_USER
+                - name: MYSQL_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: mysql
+                      key: MYSQL_PASSWORD
+
+                - name: MYSQL_DATABASE
+                  valueFrom:
+                    secretKeyRef:
+                      name: mysql
+                      key: MYSQL_DATABASE
+
+                - name: MYSQL_ROOT_PASSWORD
+                  value: "root"
 ---
 
 apiVersion: networking.k8s.io/v1beta1
@@ -96,9 +176,9 @@ spec:
           - alpinebanking.software
         secretName: alpinebanking-software-secret
   rules:
-    -   host: "api.admin.alpinebanking.software"
-        http:
-          paths:
-            -   backend:
-                  serviceName: banking-admin-api
-                  servicePort: 80
+    - host: "banking-admin-api.alpinebanking.software"
+      http:
+        paths:
+          - backend:
+              serviceName: banking-admin-api
+              servicePort: 80
