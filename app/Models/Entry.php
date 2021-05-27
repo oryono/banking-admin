@@ -7,7 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Entry extends Model
 {
-    use HasFactory;
-
     protected $connection = 'banking';
 }
