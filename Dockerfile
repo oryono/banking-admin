@@ -16,9 +16,12 @@ RUN composer install
 
 COPY docker/nginx.conf /etc/nginx/sites-enabled/default
 COPY docker/supervisord.conf /etc/supervisord.conf
+COPY deploy.sh .
 
 RUN chown -R www-data:www-data /app
 
 EXPOSE 80
+
+ENTRYPOINT ['./deploy.sh']
 
 CMD ["supervisord", "-c", "/etc/supervisord.conf"]
