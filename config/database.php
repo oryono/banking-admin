@@ -65,7 +65,7 @@ return [
 
         'banking' => [
             'driver' => 'mysql',
-            'url' => env('DATABASE_URL'),
+            'url' => env('BANKING_DATABASE_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
             'database' => env('BANKING_DB_DATABASE', ''),
