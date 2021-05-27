@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: banking-admin
 data:
-  APP_NAME: Banking Admin Api
+  APP_NAME: "Banking Admin Api"
   APP_ENV: production
   APP_KEY: base64:4Mokr8FFkjaNaLSnjLTN3aGWuG1bz+LgWMJIR7snTRA=
   APP_DEBUG: true
