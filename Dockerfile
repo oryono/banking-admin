@@ -10,6 +10,8 @@ RUN apt install git nginx zlib1g-dev libzip-dev supervisor -y
 
 RUN docker-php-ext-install zip
 
+RUN docker-php-ext-install mysql
+
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 RUN composer install
