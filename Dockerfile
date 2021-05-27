@@ -22,6 +22,4 @@ RUN chown -R www-data:www-data /app
 
 EXPOSE 80
 
-ENTRYPOINT ['./deploy.sh']
-
 CMD ["supervisord", "-c", "/etc/supervisord.conf"]

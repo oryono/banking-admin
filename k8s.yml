@@ -64,10 +64,10 @@ spec:
           image: ghcr.io/oryono/banking-admin:latest
           ports:
             - containerPort: 80
-#          lifecycle:
-#            postStart:
-#              exec:
-#                command: [ "/bin/bash", "./deploy.sh" ]
+          lifecycle:
+            postStart:
+              exec:
+                command: [ "/bin/bash", "./deploy.sh" ]
           env:
             - name: BANKING_DATABASE_URL
               valueFrom:
